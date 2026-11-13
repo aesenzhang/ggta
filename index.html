@@ -474,6 +474,17 @@
       2.4px 2.4px 0 #06261b,-2.4px 2.4px 0 #06261b,2.4px -2.4px 0 #06261b,-2.4px -2.4px 0 #06261b,
       0 3px 0 #6b3200, 0 5.5px 0 #3f1d00, 0 10px 12px rgba(0,0,0,.55);}
   #routeBar b .ic{font-size:17px; transform:rotate(-6deg) translateY(0px);}
+  /* 返回首页：从底部整条挪到标题左侧，做成小圆钮
+     —— 底栏那条深色横带按用户要求整块删除，地图一直铺到屏幕底 */
+  #routeBar .rbBack{position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    width:30px; height:30px; padding:0 0 3px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    font-family:system-ui,sans-serif; font-size:22px; font-weight:900; line-height:1;
+    color:#ffe6a8; background:rgba(6,26,46,.62);
+    border:1.5px solid rgba(255,214,120,.55); pointer-events:auto;
+    box-shadow:0 2px 8px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.18);
+    -webkit-tap-highlight-color:transparent;}
+  #routeBar .rbBack:active{transform:translateY(-50%) scale(.92);}
   /* 顶栏只在地图页出现，战斗页 HUD 直接顶到屏幕最上；
      #buildbar 的 top 由 JS 依 #topbar 自动下移，无需改 */
   #topbar{top:env(safe-area-inset-top,0px);}
@@ -481,19 +492,22 @@
 
   /* ================= 薄雾：只露出当前关附近的窗口 ================= */
   #levelSel .fog{position:absolute; left:-18px; right:-18px; z-index:6; pointer-events:none;}
+  /* 夜雾：不再用白色（白雾压在深蓝山上就是"分层断裂"的元凶），改夜色本身的深靛蓝 */
   #levelSel .fog.top{background:linear-gradient(180deg,
-    rgba(240,251,255,.90) 0%,rgba(240,251,255,.86) 62%,rgba(240,251,255,.60) 88%,rgba(240,251,255,0) 100%);}
+    rgba(4,8,22,.94) 0%,rgba(6,11,29,.90) 58%,rgba(7,14,35,.62) 86%,rgba(8,16,38,0) 100%);}
   #levelSel .fog.bot{background:linear-gradient(180deg,
-    rgba(240,251,255,0) 0%,rgba(240,251,255,.60) 12%,rgba(240,251,255,.86) 38%,rgba(240,251,255,.90) 100%);}
-  /* 雾面上的两团云：让薄雾有厚薄变化，不是一块平板 */
+    rgba(8,16,38,0) 0%,rgba(7,14,35,.62) 14%,rgba(6,11,29,.90) 42%,rgba(4,8,22,.94) 100%);}
+  /* 雾面上的两团流云：月光照着的一点冷白，只提亮雾顶，不改变雾色 */
   #levelSel .fog::after{content:"";position:absolute;inset:0;pointer-events:none;
     background-image:
-      radial-gradient(46% 9% at 28% 18%, rgba(255,255,255,.95), rgba(255,255,255,0) 72%),
-      radial-gradient(40% 7% at 74% 46%, rgba(255,255,255,.90), rgba(255,255,255,0) 74%),
-      radial-gradient(52% 8% at 34% 78%, rgba(255,255,255,.92), rgba(255,255,255,0) 72%);
+      radial-gradient(46% 9% at 28% 18%, rgba(150,190,240,.16), rgba(150,190,240,0) 72%),
+      radial-gradient(40% 7% at 74% 46%, rgba(150,190,240,.13), rgba(150,190,240,0) 74%),
+      radial-gradient(52% 8% at 34% 78%, rgba(150,190,240,.15), rgba(150,190,240,0) 72%);
     background-repeat:repeat-y;background-size:100% 360px;}
-  /* 雾里的关卡：细节糊掉，只剩朦胧轮廓——制造“还没走到、看不清”的神秘感 */
-  #levelSel .stNode.fogged{filter:blur(3.4px) saturate(.30) brightness(.99); opacity:.40;}
+  /* 雾里的关卡：只做「远、看不清」的朦胧感，绝不去色
+     —— 原 saturate(.30)+opacity.40 会把守卫洗成僵尸灰，孩子以为徽章坏了；
+        遮挡交给上面两层雾，这里仅轻微模糊 + 略提亮，颜色保持鲜活 */
+  #levelSel .stNode.fogged{filter:blur(1.9px) brightness(1.03); opacity:.78;}
   #levelSel .segTag.fogged{filter:blur(2.4px); opacity:.5;}
 
   .hide{display:none!important;}
@@ -593,8 +607,9 @@
      3) 精简：删掉难度、题数等说明文字，关名压到 2~5 字，锁改为徽章角标。 */
   #levelSel{padding:0; align-items:stretch; justify-content:center; overflow:hidden;
     background:
-      radial-gradient(56% 24% at 84% 3%, rgba(255,244,198,.9), rgba(255,244,198,0) 72%),
-      linear-gradient(180deg,#93d3f6 0%,#bce6fb 15%,#dff3fe 38%,#f2fbe7 60%,#e0f5c6 100%);}
+      radial-gradient(58% 26% at 78% 4%, rgba(92,84,200,.30), rgba(92,84,200,0) 72%),
+      radial-gradient(64% 28% at 26% 96%, rgba(38,120,180,.34), rgba(38,120,180,0) 74%),
+      linear-gradient(180deg,#03040f 0%,#070d24 22%,#0b1636 46%,#122147 72%,#1a2f5c 100%);}
   #levelSel .skyArt{position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none;}
   #levelSel .skyArt .cl1{animation:clDrift 48s ease-in-out infinite;}
   #levelSel .skyArt .cl2{animation:clDrift 70s ease-in-out infinite reverse;}
@@ -657,9 +672,11 @@
   #levelSel .stNode{position:absolute; z-index:3; display:flex; flex-direction:column; align-items:center;
     cursor:pointer; -webkit-tap-highlight-color:transparent;}
   #levelSel .stBall{position:relative; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    line-height:1; background:radial-gradient(122% 122% at 32% 20%,#ffffff 0%,#f3fff9 44%,#ddf4e8 100%);
+    line-height:1; background:radial-gradient(122% 122% at 32% 20%,#ffffff 0%,#f0fff8 40%,#cdeedc 100%);
     border:3px solid #fff;
     box-shadow:0 4px 0 #cfe6d8, 0 10px 18px rgba(40,110,80,.17), inset 0 -7px 11px rgba(120,180,150,.15);
+    /* 手绘守卫用色偏淡（大量白色描边），统一提一档饱和与对比，圆徽章才有"鲜果"感 */
+    filter:saturate(1.14) contrast(1.03);
     transition:transform .12s;}
   #levelSel .stNode:active .stBall{transform:scale(.93);}
   /* 手绘守护者：占满徽章 82%，比原来的 emoji 大一大圈 */
@@ -686,7 +703,7 @@
   #levelSel .stName{margin-top:6px; padding:1px 9px; border-radius:999px; font-size:11.5px; font-weight:900;
     color:#1d4d3b; background:rgba(255,255,255,.94); border:1.5px solid rgba(255,255,255,.95);
     box-shadow:0 2px 7px rgba(40,110,80,.14); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  #levelSel .stStars{margin-top:2px; font-size:9.5px; letter-spacing:1.2px; color:#ffb020; min-height:12px;}
+  #levelSel .stStars{margin-top:5px; font-size:9.5px; letter-spacing:1.2px; color:#ffb020; min-height:12px;}
 
   #levelSel .stNode.done .stBall{border-color:#8fe3b8;}
   #levelSel .stNode.done .stNo{background:#3fbf87;}
@@ -701,17 +718,17 @@
     50%    {box-shadow:0 0 0 3px #ffffff, 0 0 0 10px rgba(255,196,60,.26), 0 4px 0 #d8b070, 0 10px 18px rgba(40,110,80,.17);}
   }
   #levelSel .stNode.locked{cursor:not-allowed;}
-  #levelSel .stNode.locked .stBall{filter:grayscale(.5); opacity:.94;}
-  #levelSel .stNode.locked .stName{color:#5f7c72; opacity:.9;}
+  /* 未解锁：不再整体去色（原来 grayscale(.5) 把番茄变灰、萝卜变灰白，像褪色贴纸）。
+     改为「全彩 + 略压亮 + 冷色内圈 + 右下角锁」，靠锁和冷调表达"还没轮到"，颜色照旧鲜艳 */
+  #levelSel .stNode.locked .stBall{filter:saturate(1.12) contrast(1.03) brightness(.97);
+    border-color:#e6f2f8;
+    box-shadow:0 4px 0 #cfe6d8, 0 10px 18px rgba(40,110,80,.17),
+               inset 0 0 0 5px rgba(126,186,214,.20), inset 0 -7px 11px rgba(120,180,150,.15);}
+  #levelSel .stNode.locked .stNo{background:#5f93b8;}
+  #levelSel .stNode.locked .stName{color:#436457;}
 
-  #levelSel .lmFoot{flex:0 0 auto; padding:4px 14px calc(6px + env(safe-area-inset-bottom));
-    display:flex; flex-direction:column; gap:6px; position:relative; z-index:6; background:none;}
-  /* 底部深色压边与「已解锁 N / 48 层」占位按用户要求整块删除：
-     红框那块背景不再渲染，地图内容一直延伸到底部返回按钮上方 */
-  #levelSel .lmFoot .bigbtn{align-self:center; width:100%; max-width:420px; padding:11px 18px; font-size:15px;}
-  #levelSel .lmProg{align-self:center; display:inline-flex; align-items:center; gap:6px; padding:2px 12px;
-    border-radius:999px; font-size:11px; font-weight:900; color:#0f3b32; background:rgba(255,251,238,.94);
-    border:1.5px solid rgba(255,255,255,.9); box-shadow:0 3px 12px rgba(2,18,24,.44);}
+  /* 底部整条（「返回首页」按钮 + 深色横带 + 进度文字）按用户要求整块删除：
+     返回入口移到顶部标题左侧的小圆钮，地图一直铺到屏幕最下沿，不再留横带 */
   @media (max-width:430px){
     #levelSel .lmTitle{font-size:15.5px;}
     #levelSel .lmTab{padding:4px 10px; font-size:11.5px;}
@@ -724,11 +741,10 @@
     #levelSel .skyArtW{display:block;}
     #levelSel{
       background:
-        radial-gradient(26% 30% at 84% 10%, rgba(255,238,178,.95), rgba(255,238,178,0) 70%),
-        radial-gradient(70% 26% at 14% 78%, rgba(126,156,196,.85), rgba(126,156,196,0) 70%),
-        radial-gradient(86% 30% at 82% 86%, rgba(53,106,123,.9), rgba(53,106,123,0) 68%),
-        radial-gradient(96% 26% at 34% 100%, rgba(20,66,74,.95), rgba(20,66,74,0) 66%),
-        linear-gradient(180deg,#10355c 0%,#2c689a 18%,#79aecd 36%,#ffcb8e 52%,#ffe4b8 68%,#e8efe0 84%,#cfe0d2 100%);
+        radial-gradient(34% 32% at 82% 8%, rgba(96,88,208,.30), rgba(96,88,208,0) 70%),
+        radial-gradient(70% 26% at 16% 74%, rgba(40,126,190,.26), rgba(40,126,190,0) 70%),
+        radial-gradient(96% 28% at 44% 100%, rgba(28,88,150,.34), rgba(28,88,150,0) 68%),
+        linear-gradient(180deg,#03040f 0%,#070d24 22%,#0b1636 46%,#122147 72%,#1a2f5c 100%);
     }
     #levelSel .lmHead{padding-top:14px;}
     #levelSel .lmTitle{font-size:22px;}
@@ -768,7 +784,7 @@
 </head>
 <body>
 <!-- 固定标题栏：任何页面、任何关卡都钉在屏幕顶部 -->
-<div id="routeBar"><b><span class="ic">🗼</span><i style="--r:-5deg;--y:1px">咣</i><i style="--r:3deg;--y:-1.5px">咣</i><i style="--r:-4deg;--y:1px">塔</i><i style="--r:4deg;--y:-1.5px">闯</i><i style="--r:-3deg;--y:1px">关</i><i style="--r:4.5deg;--y:-1px">路</i><i style="--r:-3.5deg;--y:1.5px">径</i></b></div>
+<div id="routeBar"><button id="levelBack" class="rbBack" aria-label="返回首页">‹</button><b><span class="ic">🗼</span><i style="--r:-5deg;--y:1px">咣</i><i style="--r:3deg;--y:-1.5px">咣</i><i style="--r:-4deg;--y:1px">塔</i><i style="--r:4deg;--y:-1.5px">闯</i><i style="--r:-3deg;--y:1px">关</i><i style="--r:4.5deg;--y:-1px">路</i><i style="--r:-3.5deg;--y:1.5px">径</i></b></div>
 <div id="wrap"><canvas id="game"></canvas></div>
 
 <div id="topbar">
@@ -851,204 +867,168 @@
 <div id="levelSel" class="overlay hide">
   <svg class="skyArt" viewBox="0 0 390 844" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <defs>
-      <linearGradient id="pkSky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#10355c"/><stop offset=".22" stop-color="#2c689a"/>
-        <stop offset=".42" stop-color="#79aecd"/><stop offset=".58" stop-color="#ffcb8e"/>
-        <stop offset=".74" stop-color="#ffe4b8"/><stop offset="1" stop-color="#fff6e4"/>
+      <!-- 夜空：深蓝到靛蓝，底部留一点月光的青调，与山脉的深蓝同族，不会割裂 -->
+      <linearGradient id="pkSky" x1="0" y1="0" x2=".18" y2="1">
+        <stop offset="0" stop-color="#03040f"/><stop offset=".22" stop-color="#060b22"/>
+        <stop offset=".46" stop-color="#0a1332"/><stop offset=".70" stop-color="#101d44"/>
+        <stop offset=".88" stop-color="#162a56"/><stop offset="1" stop-color="#1c3564"/>
       </linearGradient>
-      <radialGradient id="pkSun" cx=".5" cy=".5" r=".5">
-        <stop offset="0" stop-color="#fffdf2"/><stop offset=".3" stop-color="#ffe9a4" stop-opacity=".92"/>
-        <stop offset="1" stop-color="#ffcc74" stop-opacity="0"/>
+      <radialGradient id="pkAur" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#4fd8ff" stop-opacity=".26"/>
+        <stop offset=".48" stop-color="#2f8de0" stop-opacity=".11"/>
+        <stop offset="1" stop-color="#2f8de0" stop-opacity="0"/>
       </radialGradient>
-      <linearGradient id="pkM1" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#a9bed9"/><stop offset=".52" stop-color="#d7e4f4"/><stop offset="1" stop-color="#f6faff"/>
-      </linearGradient>
-      <linearGradient id="pkM2" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#5b7aa8"/><stop offset=".52" stop-color="#8ea9ca"/><stop offset="1" stop-color="#cbdbec"/>
-      </linearGradient>
-      <linearGradient id="pkM3" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#1d4a58"/><stop offset=".52" stop-color="#3a7a7b"/><stop offset="1" stop-color="#83b3a2"/>
-      </linearGradient>
-      <linearGradient id="pkM4" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#08252b"/><stop offset=".52" stop-color="#14424a"/><stop offset="1" stop-color="#33685e"/>
-      </linearGradient>
-      <filter id="pkSoftW" x="-14%" y="-45%" width="128%" height="190%">
-        <feGaussianBlur stdDeviation="7"/>
-      </filter>
-      <filter id="pkSoftC" x="-30%" y="-80%" width="160%" height="260%">
-        <feGaussianBlur stdDeviation="5"/>
-      </filter>
-      <linearGradient id="pkMist" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
-        <stop offset=".46" stop-color="#ffffff" stop-opacity=".88"/>
-        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-      </linearGradient>
+      <radialGradient id="pkAur2" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#8f6cff" stop-opacity=".24"/>
+        <stop offset=".55" stop-color="#6a4ce0" stop-opacity=".09"/>
+        <stop offset="1" stop-color="#6a4ce0" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="pkStar" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+        <stop offset=".35" stop-color="#eaf4ff" stop-opacity=".75"/>
+        <stop offset="1" stop-color="#cfe4ff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="pkVig" cx=".5" cy=".46" r=".74">
+        <stop offset=".5" stop-color="#02040e" stop-opacity="0"/>
+        <stop offset="1" stop-color="#02040e" stop-opacity=".55"/>
+      </radialGradient>
     </defs>
     <rect width="390" height="844" fill="url(#pkSky)"/>
-    <circle cx="298" cy="252" r="172" fill="url(#pkSun)"/>
-    <g fill="#ffffff" opacity=".58">
-      <circle cx="46" cy="74" r="1.8"/><circle cx="132" cy="46" r="1.3"/><circle cx="212" cy="88" r="1.5"/>
-      <circle cx="352" cy="58" r="1.2"/><circle cx="286" cy="132" r="1.4"/><circle cx="92" cy="152" r="1.1"/>
+    <!-- 两团极光：一青一紫，让大片夜空有层次而不靠"云"硬贴 -->
+    <ellipse cx="150" cy="470" rx="290" ry="330" fill="url(#pkAur)"/>
+    <ellipse cx="352" cy="150" rx="240" ry="250" fill="url(#pkAur2)"/>
+    <!-- 星野：三层亮度，最大的 3 颗用 twk 呼吸 -->
+    <g fill="url(#pkStar)">
+      <circle cx="34" cy="52" r="3.4" opacity=".9"/><circle cx="286" cy="86" r="3.0" opacity=".85"/>
+      <circle cx="196" cy="34" r="2.6" opacity=".8"/><circle cx="120" cy="128" r="2.8" opacity=".8"/>
+      <circle cx="332" cy="212" r="3.2" opacity=".85"/><circle cx="62" cy="246" r="2.4" opacity=".7"/>
+      <circle cx="252" cy="298" r="2.6" opacity=".75"/><circle cx="156" cy="330" r="2.2" opacity=".62"/>
+      <circle cx="364" cy="356" r="2.4" opacity=".66"/><circle cx="86" cy="392" r="2.0" opacity=".55"/>
+      <circle cx="300" cy="436" r="2.2" opacity=".6"/><circle cx="40" cy="470" r="1.8" opacity=".5"/>
     </g>
-    <g stroke="#254764" stroke-width="1.6" fill="none" opacity=".45" stroke-linecap="round">
-      <path d="M104 198 q7 -6 14 0"/><path d="M126 187 q6 -5 12 0"/><path d="M84 212 q5 -4 10 0"/>
+    <g fill="#ffffff">
+      <circle class="twk" cx="286" cy="86" r="7" opacity=".22"/>
+      <circle class="twk" cx="120" cy="128" r="6" opacity=".2"/>
+      <circle class="twk" cx="332" cy="212" r="7" opacity=".2"/>
     </g>
-    <!-- 第 1 层：最远雪峰 -->
-    <path d="M-20 470 L48 330 L92 372 L150 272 L206 358 L262 306 L320 376 L410 300 L410 844 L-20 844Z" fill="url(#pkM1)"/>
-    <g fill="#ffffff" opacity=".96">
-      <path d="M150 272 L170 304 L160 299 L150 308 L140 299 L130 304Z"/>
-      <path d="M48 330 L66 358 L57 353 L48 361 L39 353 L30 358Z"/>
-      <path d="M262 306 L280 334 L271 329 L262 337 L253 329 L244 334Z"/>
+    <g fill="#dbe9ff" opacity=".7">
+      <circle cx="18" cy="96" r="1.3"/><circle cx="72" cy="24" r="1.1"/><circle cx="104" cy="70" r="1.2"/>
+      <circle cx="152" cy="96" r="1.0"/><circle cx="176" cy="62" r="1.3"/><circle cx="214" cy="110" r="1.1"/>
+      <circle cx="240" cy="46" r="1.2"/><circle cx="266" cy="148" r="1.0"/><circle cx="308" cy="120" r="1.3"/>
+      <circle cx="352" cy="60" r="1.1"/><circle cx="374" cy="140" r="1.0"/><circle cx="28" cy="164" r="1.2"/>
+      <circle cx="56" cy="196" r="1.0"/><circle cx="96" cy="176" r="1.3"/><circle cx="140" cy="202" r="1.1"/>
+      <circle cx="184" cy="168" r="1.0"/><circle cx="222" cy="216" r="1.2"/><circle cx="262" cy="188" r="1.1"/>
+      <circle cx="296" cy="252" r="1.0"/><circle cx="338" cy="268" r="1.2"/><circle cx="368" cy="300" r="1.0"/>
+      <circle cx="22" cy="286" r="1.1"/><circle cx="74" cy="318" r="1.0"/><circle cx="118" cy="272" r="1.2"/>
+      <circle cx="170" cy="292" r="1.0"/><circle cx="206" cy="350" r="1.1"/><circle cx="244" cy="386" r="1.0"/>
+      <circle cx="288" cy="336" r="1.2"/><circle cx="330" cy="398" r="1.0"/><circle cx="46" cy="428" r="1.1"/>
+      <circle cx="94" cy="452" r="1.0"/><circle cx="148" cy="436" r="1.2"/><circle cx="198" cy="470" r="1.0"/>
     </g>
-    <path d="M-20 470 L48 330 L92 372 L150 272 L206 358 L262 306 L320 376 L410 300"
-          fill="none" stroke="#ffffff" stroke-opacity=".9" stroke-width="2.4" stroke-linejoin="round"/>
-    <rect x="-20" y="450" width="430" height="132" fill="url(#pkMist)" filter="url(#pkSoftW)"/>
-    <g class="cl1" fill="#ffffff" opacity=".7" filter="url(#pkSoftC)">
-      <ellipse cx="84" cy="404" rx="48" ry="12"/><ellipse cx="112" cy="397" rx="30" ry="10"/>
+    <!-- 三层夜山：远=月光照亮（偏蓝紫、最亮）→ 近=最沉的墨蓝，层层压暗出纵深。
+         峰做得又高又陡（不是小锯齿），才有参考图那种"大山压顶"的气势 -->
+    <path d="M-20 610 L34 486 L72 528 L118 352 L166 470 L206 404 L248 500 L300 372 L344 486 L382 430 L410 470
+             L410 844 L-20 844 Z" fill="#1b2c55"/>
+    <g fill="#33518f" opacity=".5">
+      <path d="M118 352 L166 470 L118 500 Z"/><path d="M300 372 L344 486 L300 512 Z"/>
+      <path d="M206 404 L248 500 L206 522 Z"/>
     </g>
-    <g class="cl2" fill="#ffffff" opacity=".55" filter="url(#pkSoftC)">
-      <ellipse cx="302" cy="432" rx="54" ry="13"/><ellipse cx="272" cy="425" rx="28" ry="9"/>
+    <path d="M-20 610 L34 486 L72 528 L118 352 L166 470 L206 404 L248 500 L300 372 L344 486 L382 430 L410 470"
+          fill="none" stroke="#7fa8ec" stroke-opacity=".34" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M-20 672 L26 578 L70 612 L114 452 L158 566 L202 500 L246 588 L296 470 L340 570 L380 520 L410 556
+             L410 844 L-20 844 Z" fill="#101c3c"/>
+    <g fill="#1e3566" opacity=".55">
+      <path d="M114 452 L158 566 L114 596 Z"/><path d="M296 470 L340 570 L296 600 Z"/>
     </g>
-    <!-- 第 2 层：中景 -->
-    <path d="M-20 540 L44 452 L104 506 L176 418 L252 502 L322 436 L410 516 L410 844 L-20 844Z" fill="url(#pkM2)"/>
-    <g fill="#ffffff" opacity=".74">
-      <path d="M176 418 L194 448 L186 444 L176 452 L166 444 L158 448Z"/>
-      <path d="M322 436 L338 462 L330 458 L322 465 L314 458 L306 462Z"/>
+    <path d="M-20 672 L26 578 L70 612 L114 452 L158 566 L202 500 L246 588 L296 470 L340 570 L380 520 L410 556"
+          fill="none" stroke="#5fb4f0" stroke-opacity=".30" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M-20 742 L36 656 L82 690 L128 556 L176 668 L222 602 L268 690 L318 574 L360 664 L392 622 L410 648
+             L410 844 L-20 844 Z" fill="#060c1c"/>
+    <g fill="#10203f" opacity=".65">
+      <path d="M128 556 L176 668 L128 700 Z"/><path d="M318 574 L360 664 L318 696 Z"/>
     </g>
-    <path d="M-20 540 L44 452 L104 506 L176 418 L252 502 L322 436 L410 516"
-          fill="none" stroke="#dceafc" stroke-opacity=".66" stroke-width="2" stroke-linejoin="round"/>
-    <!-- 第 3 层：近山 -->
-    <path d="M-20 646 L70 548 L150 612 L236 522 L320 606 L410 542 L410 844 L-20 844Z" fill="url(#pkM3)"/>
-    <path d="M-20 646 L70 548 L150 612 L236 522 L320 606 L410 542"
-          fill="none" stroke="#ffd7a0" stroke-opacity=".38" stroke-width="2.2" stroke-linejoin="round"/>
-    <!-- 第 4 层：前景山脊 -->
-    <path d="M-20 742 L88 654 L188 722 L292 636 L410 722 L410 844 L-20 844Z" fill="url(#pkM4)"/>
-    <path d="M-20 742 L88 654 L188 722 L292 636 L410 722"
-          fill="none" stroke="#ffbd77" stroke-opacity=".4" stroke-width="2" stroke-linejoin="round"/>
-    <g fill="#0f3238" opacity=".9">
-      <path d="M36 812 l16 -46 l16 46z"/><path d="M66 822 l13 -38 l13 38z"/>
-      <path d="M318 818 l15 -42 l15 42z"/><path d="M348 826 l12 -34 l12 34z"/>
-    </g>
+    <path d="M-20 742 L36 656 L82 690 L128 556 L176 668 L222 602 L268 690 L318 574 L360 664 L392 622 L410 648"
+          fill="none" stroke="#45c8ff" stroke-opacity=".34" stroke-width="1.8" stroke-linejoin="round"/>
+    <rect width="390" height="844" fill="url(#pkVig)"/>
   </svg>
   <svg class="skyArt skyArtW" viewBox="0 0 1280 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
-      <linearGradient id="wkSky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#0d2e52"/><stop offset=".18" stop-color="#215a8c"/>
-        <stop offset=".34" stop-color="#5f9cc4"/><stop offset=".50" stop-color="#ffc98a"/>
-        <stop offset=".66" stop-color="#ffe3b6"/><stop offset="1" stop-color="#fff8ea"/>
+      <linearGradient id="wkSky" x1="0" y1="0" x2=".12" y2="1">
+        <stop offset="0" stop-color="#03040f"/><stop offset=".24" stop-color="#070d26"/>
+        <stop offset=".48" stop-color="#0b1636"/><stop offset=".72" stop-color="#122147"/>
+        <stop offset="1" stop-color="#1a2f5c"/>
       </linearGradient>
-      <radialGradient id="wkSun" cx=".5" cy=".5" r=".5">
-        <stop offset="0" stop-color="#fffdf4"/><stop offset=".24" stop-color="#ffeda8" stop-opacity=".95"/>
-        <stop offset=".62" stop-color="#ffc978" stop-opacity=".34"/>
-        <stop offset="1" stop-color="#ffb45e" stop-opacity="0"/>
+      <radialGradient id="wkAur" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#4fd8ff" stop-opacity=".24"/>
+        <stop offset=".5" stop-color="#3189dc" stop-opacity=".1"/>
+        <stop offset="1" stop-color="#3189dc" stop-opacity="0"/>
       </radialGradient>
-      <linearGradient id="wkM1" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#a8bdd8"/><stop offset=".52" stop-color="#d5e2f2"/><stop offset="1" stop-color="#f6faff"/>
-      </linearGradient>
-      <linearGradient id="wkM2" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#5a79a7"/><stop offset=".52" stop-color="#8ea9cb"/><stop offset="1" stop-color="#cfddee"/>
-      </linearGradient>
-      <linearGradient id="wkM3" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#1b4653"/><stop offset=".52" stop-color="#38767a"/><stop offset="1" stop-color="#84b4a3"/>
-      </linearGradient>
-      <linearGradient id="wkM4" x1="0" y1="0" x2=".72" y2="1">
-        <stop offset="0" stop-color="#071f25"/><stop offset=".55" stop-color="#0d2e34"/>
-        <stop offset="1" stop-color="#2a5b52"/>
-      </linearGradient>
-      <filter id="softW" x="-14%" y="-45%" width="128%" height="190%">
-        <feGaussianBlur stdDeviation="9"/>
-      </filter>
-      <filter id="softC" x="-30%" y="-80%" width="160%" height="260%">
-        <feGaussianBlur stdDeviation="6"/>
-      </filter>
-      <linearGradient id="wkMist" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
-        <stop offset=".44" stop-color="#ffffff" stop-opacity=".97"/>
-        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-      </linearGradient>
+      <radialGradient id="wkAur2" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#8f6cff" stop-opacity=".22"/>
+        <stop offset=".55" stop-color="#6a4ce0" stop-opacity=".08"/>
+        <stop offset="1" stop-color="#6a4ce0" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="wkStar" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+        <stop offset=".35" stop-color="#eaf4ff" stop-opacity=".75"/>
+        <stop offset="1" stop-color="#cfe4ff" stop-opacity="0"/>
+      </radialGradient>
       <radialGradient id="wkVig" cx=".5" cy=".46" r=".72">
-        <stop offset=".52" stop-color="#04202e" stop-opacity="0"/>
-        <stop offset="1" stop-color="#04202e" stop-opacity=".52"/>
+        <stop offset=".52" stop-color="#02040e" stop-opacity="0"/>
+        <stop offset="1" stop-color="#02040e" stop-opacity=".6"/>
       </radialGradient>
-      <linearGradient id="wkHaze" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#ffd9a4" stop-opacity="0"/>
-        <stop offset=".42" stop-color="#ffdcae" stop-opacity=".42"/>
-        <stop offset="1" stop-color="#ffd9a4" stop-opacity="0"/>
-      </linearGradient>
     </defs>
-
     <rect width="1280" height="900" fill="url(#wkSky)"/>
-    <!-- 晨光：太阳压在右侧山脊上 -->
-    <circle cx="1002" cy="300" r="430" fill="url(#wkSun)"/>
-    <circle cx="1002" cy="300" r="58" fill="#fffdf0" opacity=".92"/>
-    <g fill="#fff6d2" opacity=".16">
-      <path d="M1002 300 L1290 96 L1290 190 Z"/>
-      <path d="M1002 300 L1290 300 L1290 372 Z"/>
-      <path d="M1002 300 L560 118 L560 196 Z"/>
+    <ellipse cx="520" cy="520" rx="760" ry="420" fill="url(#wkAur)"/>
+    <ellipse cx="1080" cy="200" rx="520" ry="380" fill="url(#wkAur2)"/>
+    <g fill="url(#wkStar)">
+      <circle cx="86" cy="70" r="3.6" opacity=".9"/><circle cx="360" cy="120" r="3.0" opacity=".82"/>
+      <circle cx="748" cy="62" r="3.2" opacity=".86"/><circle cx="1042" cy="140" r="2.8" opacity=".8"/>
+      <circle cx="1196" cy="300" r="3.0" opacity=".8"/><circle cx="470" cy="286" r="2.6" opacity=".72"/>
+      <circle cx="180" cy="360" r="2.4" opacity=".66"/><circle cx="900" cy="392" r="2.6" opacity=".7"/>
+      <circle cx="1230" cy="520" r="2.2" opacity=".58"/><circle cx="620" cy="470" r="2.0" opacity=".5"/>
     </g>
-    <g fill="#ffffff" opacity=".5">
-      <circle cx="86" cy="70" r="2.2"/><circle cx="188" cy="42" r="1.5"/><circle cx="286" cy="92" r="1.9"/>
-      <circle cx="392" cy="58" r="1.4"/><circle cx="126" cy="150" r="1.3"/><circle cx="470" cy="120" r="1.1"/>
+    <g fill="#ffffff">
+      <circle class="twk" cx="360" cy="120" r="8" opacity=".2"/>
+      <circle class="twk" cx="1042" cy="140" r="7" opacity=".18"/>
+      <circle class="twk" cx="900" cy="392" r="7" opacity=".16"/>
     </g>
-    <g stroke="#1d3f5c" stroke-width="2" fill="none" opacity=".34" stroke-linecap="round">
-      <path d="M196 196 q9 -7 18 0"/><path d="M226 182 q7 -6 14 0"/>
-      <path d="M1136 162 q9 -7 18 0"/><path d="M1170 148 q7 -6 14 0"/>
+    <g fill="#dbe9ff" opacity=".68">
+      <circle cx="40" cy="190" r="1.4"/><circle cx="126" cy="252" r="1.2"/><circle cx="214" cy="120" r="1.3"/>
+      <circle cx="286" cy="206" r="1.1"/><circle cx="404" cy="56" r="1.4"/><circle cx="472" cy="182" r="1.2"/>
+      <circle cx="548" cy="96" r="1.3"/><circle cx="612" cy="210" r="1.1"/><circle cx="680" cy="140" r="1.4"/>
+      <circle cx="812" cy="196" r="1.2"/><circle cx="884" cy="88" r="1.3"/><circle cx="962" cy="238" r="1.1"/>
+      <circle cx="1096" cy="88" r="1.4"/><circle cx="1168" cy="212" r="1.2"/><circle cx="1244" cy="146" r="1.3"/>
+      <circle cx="72" cy="470" r="1.2"/><circle cx="158" cy="518" r="1.1"/><circle cx="246" cy="440" r="1.3"/>
+      <circle cx="330" cy="546" r="1.1"/><circle cx="424" cy="486" r="1.2"/><circle cx="516" cy="580" r="1.1"/>
+      <circle cx="606" cy="516" r="1.3"/><circle cx="702" cy="586" r="1.1"/><circle cx="790" cy="502" r="1.2"/>
+      <circle cx="872" cy="562" r="1.1"/><circle cx="962" cy="492" r="1.3"/><circle cx="1054" cy="588" r="1.1"/>
+      <circle cx="1146" cy="512" r="1.2"/><circle cx="1226" cy="600" r="1.1"/>
     </g>
-
-    <!-- 第 1 层：最远雪峰 -->
-    <path d="M-40 506 L112 306 L196 396 L306 232 L424 392 L524 324 L648 424 L764 288 L884 410 L1006 334 L1122 424 L1234 344 L1330 432 L1330 900 L-40 900Z"
-          fill="url(#wkM1)"/>
-    <g fill="#ffffff" opacity=".95">
-      <path d="M306 232 L330 272 L319 266 L306 278 L293 266 L282 272Z"/>
-      <path d="M764 288 L786 324 L776 319 L764 330 L752 319 L742 324Z"/>
-      <path d="M112 306 L132 340 L122 335 L112 345 L102 335 L92 340Z"/>
+    <!-- 三层夜山（横构图）：远 → 近逐层压暗 -->
+    <path d="M-40 470 L120 350 L220 420 L340 300 L430 386 L560 268 L660 372 L800 288 L900 400 L1030 320 L1130 402 L1240 340 L1330 420
+             L1330 900 L-40 900 Z" fill="#1b2c55"/>
+    <g fill="#33518f" opacity=".5">
+      <path d="M340 300 L430 386 L340 430 Z"/><path d="M560 268 L660 372 L560 412 Z"/>
+      <path d="M800 288 L900 400 L800 430 Z"/><path d="M1030 320 L1130 402 L1030 436 Z"/>
     </g>
-    <path d="M-40 506 L112 306 L196 396 L306 232 L424 392 L524 324 L648 424 L764 288 L884 410 L1006 334 L1122 424 L1234 344 L1330 432"
-          fill="none" stroke="#ffffff" stroke-opacity=".92" stroke-width="2.6" stroke-linejoin="round"/>
-    <path d="M-40 506 L112 306 L196 396 L306 232 L424 392 L524 324 L648 424 L764 288 L884 410 L1006 334 L1122 424 L1234 344 L1330 432"
-          fill="none" stroke="#ffe9bd" stroke-opacity=".5" stroke-width="5.5" stroke-linejoin="round"/>
-    <rect x="-40" y="486" width="1360" height="150" fill="url(#wkMist)" filter="url(#softW)"/>
-    <g class="cl1" fill="#ffffff" opacity=".72" filter="url(#softC)">
-      <ellipse cx="248" cy="436" rx="86" ry="15"/><ellipse cx="316" cy="426" rx="52" ry="12"/>
+    <path d="M-40 470 L120 350 L220 420 L340 300 L430 386 L560 268 L660 372 L800 288 L900 400 L1030 320 L1130 402 L1240 340 L1330 420"
+          fill="none" stroke="#7fa8ec" stroke-opacity=".32" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M-40 566 L150 452 L280 520 L420 408 L560 500 L700 386 L840 492 L980 402 L1100 502 L1220 428 L1330 512
+             L1330 900 L-40 900 Z" fill="#101c3c"/>
+    <g fill="#1e3566" opacity=".55">
+      <path d="M420 408 L560 500 L420 536 Z"/><path d="M700 386 L840 492 L700 528 Z"/>
+      <path d="M980 402 L1100 502 L980 532 Z"/>
     </g>
-    <g class="cl2" fill="#ffffff" opacity=".62" filter="url(#softC)">
-      <ellipse cx="906" cy="466" rx="96" ry="16"/><ellipse cx="836" cy="456" rx="50" ry="11"/>
+    <path d="M-40 566 L150 452 L280 520 L420 408 L560 500 L700 386 L840 492 L980 402 L1100 502 L1220 428 L1330 512"
+          fill="none" stroke="#5fb4f0" stroke-opacity=".28" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M-40 668 L170 566 L330 630 L500 528 L660 620 L820 520 L980 616 L1140 536 L1290 622
+             L1330 600 L1330 900 L-40 900 Z" fill="#060c1c"/>
+    <g fill="#10203f" opacity=".6">
+      <path d="M500 528 L660 620 L500 656 Z"/><path d="M820 520 L980 616 L820 652 Z"/>
+      <path d="M1140 536 L1290 622 L1140 656 Z"/>
     </g>
-
-    <!-- 第 2 层：中景 -->
-    <path d="M-40 616 L120 468 L236 556 L372 424 L500 552 L622 470 L752 566 L878 452 L1004 558 L1132 476 L1330 574 L1330 900 L-40 900Z"
-          fill="url(#wkM2)"/>
-    <g fill="#ffffff" opacity=".7">
-      <path d="M372 424 L394 458 L384 453 L372 464 L360 453 L350 458Z"/>
-      <path d="M878 452 L898 484 L889 479 L878 489 L867 479 L858 484Z"/>
-    </g>
-    <path d="M-40 616 L120 468 L236 556 L372 424 L500 552 L622 470 L752 566 L878 452 L1004 558 L1132 476 L1330 574"
-          fill="none" stroke="#dceafc" stroke-opacity=".72" stroke-width="2.2" stroke-linejoin="round"/>
-    <path d="M-40 616 L120 468 L236 556 L372 424 L500 552 L622 470 L752 566 L878 452 L1004 558 L1132 476 L1330 574"
-          fill="none" stroke="#ffdca8" stroke-opacity=".3" stroke-width="5" stroke-linejoin="round"/>
-    <rect x="-40" y="596" width="1360" height="128" fill="url(#wkMist)" filter="url(#softW)"/>
-
-    <!-- 第 3 层：近山（两侧高、中间落成山谷，把关卡列让出来） -->
-    <path d="M-40 706 L124 552 L268 664 L392 588 L482 700 L556 750 L636 778 L722 746 L806 698 L900 584 L1024 668 L1176 546 L1330 690 L1330 900 L-40 900Z"
-          fill="url(#wkM3)"/>
-    <path d="M-40 706 L124 552 L268 664 L392 588 L482 700 L556 750 L636 778 L722 746 L806 698 L900 584 L1024 668 L1176 546 L1330 690"
-          fill="none" stroke="#ffcf8e" stroke-opacity=".42" stroke-width="2.4"/>
-    <rect x="-40" y="760" width="1360" height="120" fill="url(#wkHaze)" opacity=".55"/>
-
-    <rect x="-40" y="742" width="1360" height="104" fill="url(#wkMist)" opacity=".62" filter="url(#softW)"/>
-    <!-- 第 4 层：前景山脊（压暗，做剪影） -->
-    <path d="M-40 828 L176 742 L352 816 L512 772 L668 834 L828 776 L988 820 L1148 748 L1330 810 L1330 900 L-40 900Z"
-          fill="url(#wkM4)"/>
-    <path d="M-40 828 L176 742 L352 816 L512 772 L668 834 L828 776 L988 820 L1148 748 L1330 810"
-          fill="none" stroke="#ffb974" stroke-opacity=".34" stroke-width="2.2"/>
-    <g fill="#08222a">
-      <path d="M56 900 l30 -104 l30 104z"/><path d="M112 900 l25 -84 l25 84z"/>
-      <path d="M172 900 l22 -68 l22 68z"/>
-      <path d="M1052 900 l28 -96 l28 96z"/><path d="M1106 900 l23 -78 l23 78z"/>
-      <path d="M1160 900 l20 -60 l20 60z"/>
-    </g>
-
-    <!-- 暗角：收住四角，把视线压到中间山谷 -->
+    <path d="M-40 668 L170 566 L330 630 L500 528 L660 620 L820 520 L980 616 L1140 536 L1290 622 L1330 600"
+          fill="none" stroke="#45c8ff" stroke-opacity=".32" stroke-width="2" stroke-linejoin="round"/>
     <rect width="1280" height="900" fill="url(#wkVig)"/>
   </svg>
   <div class="lmWrap">
@@ -1056,10 +1036,6 @@
       <div class="lmTop"><span id="dailyGift">🎁 今日补给</span></div>
     </div>
     <div class="lmBody" id="levelGrid"></div>
-    <div class="lmFoot">
-      <button class="bigbtn ghost" id="levelBack">返回首页</button>
-      <div id="adBanner" hidden></div>
-    </div>
   </div>
 </div>
 
@@ -5994,72 +5970,93 @@ function ridgeSVG(W,H,pts,BALL){
   const tops=pts.map(p=>({x:p.x, y:p.y+BALL*0.46}));
   if(!tops.length) return '';
 
-  /* 一条山脊：峰顶为节点，峰间为垭口 */
+  /* 一条山脊：峰顶为节点，峰间为垭口；两端沿山势继续下斜出屏，
+     不再横着收边——横收边会在底部叠出三条平行亮带，看着像水面 */
+  function endYard(P2, which){
+    /* 用首/末两峰的坡度外推，把山脚送出演外 */
+    const n=P2.length;
+    if(n<2) return 120;
+    if(which==='l'){
+      const slope=(P2[0].y-P2[1].y)/Math.max(1,Math.abs(P2[0].x-P2[1].x));
+      const dx=Math.abs(P2[0].x+40);
+      return Math.max(-260, Math.min(260, slope*dx));
+    }
+    const slope=(P2[n-1].y-P2[n-2].y)/Math.max(1,Math.abs(P2[n-1].x-P2[n-2].x));
+    const dx=Math.abs(W+40-P2[n-1].x);
+    return Math.max(-260, Math.min(260, slope*dx));
+  }
   function ridgePath(sc,dy,notch){
     const P2=tops.map(t=>({x:cx0+(t.x-cx0)*sc, y:t.y+dy}));
-    let d='M'+f(-40)+' '+f(P2[0].y+notch*1.5);
+    let d='M'+f(-40)+' '+f(P2[0].y+endYard(P2,'l'));
     d+=' L'+f(P2[0].x)+' '+f(P2[0].y);
     for(let i=0;i<P2.length-1;i++){
       const a=P2[i], b=P2[i+1];
       d+=' Q'+f((a.x+b.x)/2)+' '+f(Math.max(a.y,b.y)+notch*2)+' '+f(b.x)+' '+f(b.y);
     }
-    d+=' L'+f(W+40)+' '+f(P2[P2.length-1].y+notch*1.5);
+    d+=' L'+f(W+40)+' '+f(P2[P2.length-1].y+endYard(P2,'r'));
     d+=' L'+f(W+40)+' '+f(H+60)+' L'+f(-40)+' '+f(H+60)+' Z';
     return d;
   }
-  /* 只有脊线（不闭合），用来描白边 */
+  /* 只有脊线（不闭合），用来描辉光边 */
   function crest(sc,dy,notch){
     const P2=tops.map(t=>({x:cx0+(t.x-cx0)*sc, y:t.y+dy}));
-    let d='M'+f(-40)+' '+f(P2[0].y+notch*1.5);
+    let d='M'+f(-40)+' '+f(P2[0].y+endYard(P2,'l'));
     d+=' L'+f(P2[0].x)+' '+f(P2[0].y);
     for(let i=0;i<P2.length-1;i++){
       const a=P2[i], b=P2[i+1];
       d+=' Q'+f((a.x+b.x)/2)+' '+f(Math.max(a.y,b.y)+notch*2)+' '+f(b.x)+' '+f(b.y);
     }
-    d+=' L'+f(W+40)+' '+f(P2[P2.length-1].y+notch*1.5);
+    d+=' L'+f(W+40)+' '+f(P2[P2.length-1].y+endYard(P2,'r'));
     return d;
   }
 
   const g=[];
   g.push('<svg viewBox="0 0 '+f(W)+' '+f(H)+'" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" class="ridgeSVG">');
   g.push('<defs>');
+  /* 夜蓝三层山：越远越"被月光照亮"（偏蓝紫、明度高），越近越沉（近墨蓝）。
+     三层只差明度与色相 ±8°，不再像原来"灰蓝 / 淡青 / 墨绿"三张皮各画各的 */
   g.push('<linearGradient id="rFar" x1="0" y1="0" x2="0" y2="1">'+
-    '<stop offset="0" stop-color="#c9e2f4"/><stop offset=".55" stop-color="#dceef8"/><stop offset="1" stop-color="#eaf6fc"/></linearGradient>');
+    '<stop offset="0" stop-color="#1b2b57"/><stop offset=".52" stop-color="#213463"/><stop offset="1" stop-color="#2a4177"/></linearGradient>');
   g.push('<linearGradient id="rMid" x1="0" y1="0" x2="0" y2="1">'+
-    '<stop offset="0" stop-color="#e4f3fb"/><stop offset=".5" stop-color="#f2fbff"/><stop offset="1" stop-color="#fbfeff"/></linearGradient>');
+    '<stop offset="0" stop-color="#0e1830"/><stop offset=".5" stop-color="#121d3a"/><stop offset="1" stop-color="#182546"/></linearGradient>');
   g.push('<linearGradient id="rNear" x1="0" y1="0" x2="0" y2="1">'+
-    '<stop offset="0" stop-color="#fbffff"/><stop offset="1" stop-color="#ffffff"/></linearGradient>');
+    '<stop offset="0" stop-color="#04060e"/><stop offset=".55" stop-color="#060a16"/><stop offset="1" stop-color="#0a1122"/></linearGradient>');
   g.push('<radialGradient id="rCrown" cx="50%" cy="50%" r="50%">'+
     '<stop offset="0" stop-color="#fff3b0" stop-opacity=".95"/><stop offset=".55" stop-color="#ffcf5c" stop-opacity=".45"/>'+
     '<stop offset="1" stop-color="#ffcf5c" stop-opacity="0"/></radialGradient>');
+  /* 云海：月光下的淡青薄雾，压在山的腰线上，把长山切成"一程一程" */
   g.push('<linearGradient id="rHaze" x1="0" y1="0" x2="0" y2="1">'+
-    '<stop offset="0" stop-color="#ffffff" stop-opacity="0"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".62"/>'+
-    '<stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>');
+    '<stop offset="0" stop-color="#8fc4ff" stop-opacity="0"/><stop offset=".5" stop-color="#9ed2ff" stop-opacity=".16"/>'+
+    '<stop offset="1" stop-color="#8fc4ff" stop-opacity="0"/></linearGradient>');
   g.push('</defs>');
 
-  /* 远景：更高、更窄、更淡 —— 把"后面还有很多山"画出来 */
-  g.push('<path d="'+ridgePath(0.52,-172,86)+'" fill="url(#rFar)"/>');
-  /* 中景 */
-  g.push('<path d="'+ridgePath(0.82,-58,74)+'" fill="url(#rMid)"/>');
-  g.push('<path d="'+crest(0.82,-58,74)+'" fill="none" stroke="#ffffff" stroke-opacity=".75" stroke-width="2"/>');
-  /* 近景：承载节点的实体山脊 */
-  g.push('<path d="'+ridgePath(1,0,62)+'" fill="url(#rNear)"/>');
-  g.push('<path d="'+crest(1,0,62)+'" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linejoin="round"/>');
-  /* 峰侧阴影：右下压暗，和全局主光一致 */
-  g.push('<path d="'+crest(1,0,62)+'" fill="none" stroke="#bcdcee" stroke-opacity=".55" stroke-width="1.4" transform="translate(2.4 3.2)"/>');
+  /* ---------- 背景山脉：一列列横向山峦铺满整条路 ----------
+     原来的远/中景是"同一组峰缩放后的两份拷贝"，层层套在一起就成了发光缎带。
+     这里改成独立的山峦序列：每 300~360px 一道山脊，峰高由固定哈希决定，
+     两道交替错开，看上去是连绵不断的山，而不是一条边走边发光的布。 */
+  /* ---------- 这条路所在的那道山脊（唯一一条与关卡对齐的） ---------- */
+  /* 这里不再铺一层填充：背景已经是固定夜山，再叠一块半透明山体
+     会在宽屏/关卡少时露成大方块。只保留贴着小径的发光脊线。 */
 
-  /* 雪冠：每座峰尖一顶白雪 */
+  /* 月光辉光：贴着脊线画三层由宽到窄、由淡到亮的描边（不用高斯模糊，省性能） */
+  const cNear=crest(1,0,62);
+  [[.07,18],[.10,13],[.14,9]].forEach(function(pr){
+    g.push('<path d="'+cNear+'" fill="none" stroke="#37d6ff" stroke-opacity="'+pr[0]+
+      '" stroke-width="'+pr[1]+'" stroke-linejoin="round" stroke-linecap="round"/>');
+  });
+  g.push('<path d="'+cNear+'" fill="none" stroke="#d6efff" stroke-opacity=".85" stroke-width="2" stroke-linejoin="round"/>');
+  /* 峰外侧压深一道，山脊有厚度 */
+  g.push('<path d="'+cNear+'" fill="none" stroke="#02060f" stroke-opacity=".6" stroke-width="2" transform="translate(2.6 3.4)"/>');
+
+  /* 峰顶：月光打在脊线上的一道冷银 */
   tops.forEach((t,i)=>{
     const sc=(i===tops.length-1)?1.18:1;
-    g.push('<path d="M'+f(t.x-13*sc)+' '+f(t.y+17*sc)+' Q'+f(t.x)+' '+f(t.y-3*sc)+' '+f(t.x+13*sc)+' '+f(t.y+17*sc)+
-      ' q'+f(-7*sc)+' '+f(4*sc)+' '+f(-26*sc)+' 0z" fill="#ffffff" opacity=".96"/>');
+    g.push('<path d="M'+f(t.x-11*sc)+' '+f(t.y+14*sc)+' Q'+f(t.x)+' '+f(t.y-1*sc)+' '+f(t.x+11*sc)+' '+f(t.y+14*sc)+
+      ' q'+f(-6*sc)+' '+f(3*sc)+' '+f(-22*sc)+' 0z" fill="#dceaff" opacity=".40"/>');
   });
 
-  /* 云海雾带：每 7 峰一道，把长山切成"一程一程" */
-  for(let i=3;i<tops.length;i+=7){
-    const y=tops[i].y+58;
-    g.push('<rect x="-40" y="'+f(y)+'" width="'+f(W+80)+'" height="86" fill="url(#rHaze)"/>');
-  }
+  /* 「云海雾带」已删除：那是浅色版用来切分长山的横条，
+     夜里会变成一块块边缘生硬的亮矩形（宽屏下尤其明显）。 */
 
   /* 最高峰：玩家自己的金环 + 小旗，一眼看出"山顶是我" */
   const tp=tops[tops.length-1];
@@ -6124,12 +6121,16 @@ function renderJourney(){
   svg.setAttribute('preserveAspectRatio','none');
   const cut=Math.min(Math.max(unlocked,0), pts.length-1);
   [
-    {d:curve(pts.slice(0,cut+1)), w:20, c:'#a9854d', o:'.85'},
-    {d:curve(pts.slice(0,cut+1)), w:14, c:'#fff5df', o:'1'},
-    {d:curve(pts.slice(0,cut+1)), w:4,  c:'#e09a2b', o:'.95', dash:'0.1 12'},
-    {d:curve(pts.slice(cut)),      w:20, c:'#cdbfa4', o:'.62'},
-    {d:curve(pts.slice(cut)),      w:14, c:'#fffdf6', o:'1'},
-    {d:curve(pts.slice(cut)),      w:4,  c:'#e6bd72', o:'.9', dash:'0.1 12'}
+    /* 已走过的一段：冷青光带（外发光 → 主光 → 亮芯 → 流动虚线），像参考图里那条发光山道 */
+    {d:curve(pts.slice(0,cut+1)), w:24, c:'#2fd0ff', o:'.20'},
+    {d:curve(pts.slice(0,cut+1)), w:14, c:'#79e6ff', o:'.55'},
+    {d:curve(pts.slice(0,cut+1)), w:6,  c:'#e9fdff', o:'.98'},
+    {d:curve(pts.slice(0,cut+1)), w:3.4,c:'#ffffff', o:'.95', dash:'0.1 13'},
+    /* 还没走到的一段：同一条光带，紫蓝、偏暗，暗示"路还在前面" */
+    {d:curve(pts.slice(cut)),      w:24, c:'#6a7bff', o:'.12'},
+    {d:curve(pts.slice(cut)),      w:14, c:'#8b97ff', o:'.30'},
+    {d:curve(pts.slice(cut)),      w:5,  c:'#c8d2ff', o:'.52'},
+    {d:curve(pts.slice(cut)),      w:3,  c:'#ffffff', o:'.32', dash:'0.1 13'}
   ].forEach(L=>{
     if(!L.d) return;
     const p=document.createElementNS(NS,'path');
@@ -6182,9 +6183,8 @@ function renderJourney(){
     ball.style.fontSize=Math.round(BALL*0.47)+'px';
     ball.innerHTML=L.icon+'<span class="stNo">'+(i+1)+'</span>'+(locked?'<span class="stLock">🔒</span>':''); 
     n.appendChild(ball);
-    const nm=document.createElement('div'); nm.className='stName';
-    nm.textContent=L.sn||L.short||L.cat;
-    n.appendChild(nm);
+    /* 关卡知识点短名（「进位加 / 看钟表 / 认图形 / 十以内」）已按用户要求去全部删除：
+       地图上只留「守护形象 + 关卡编号」，不让孩子一进来就看到课本章节目录 */
     const sr=document.createElement('div'); sr.className='stStars';
     sr.textContent=(!locked&&st)?starStr(st):'';
     n.appendChild(sr);
@@ -6192,38 +6192,25 @@ function renderJourney(){
     cv.appendChild(n);
   });
 
-  /* 5) 段标记：第 1–4 层（只做分段导航，不再堆难度与题数） */
-  segs.forEach(s=>{
-    const g=document.createElement('div'); g.className='segTag lmSec';
-    g.id='term'+s.term;
-    g.textContent='第 '+(s.i+1)+'–'+(Math.min(LEVELS.length,s.i+4))+' 层';
-    g.style.left=Math.max(54, Math.min(CW-54, s.x))+'px';
-    g.style.top=(s.y-BALL/2-26)+'px';
-    /* 窗口外的段标记一并模糊，避免雾里透出清晰文字 */
-    if(s.i < Math.max(0, Math.min(Math.max(unlocked,0), LEVELS.length-1)-1)
-       || s.i > Math.min(LEVELS.length-1, Math.max(unlocked,0)+4)) g.classList.add('fogged');
-    cv.appendChild(g);
-  });
+  /* 5) 段标记（「第 1–4 层」）已按用户要求全部删除：
+     小朋友要的是"往上爬"，不是"这一章学什么"，分段的课本感一并去掉。
+     高度仍按 segs 计算（见上），只少了那一枚文字标签，路径节奏不受影响。 */
 
-  /* 5.5) 薄雾：只露出「当前关 + 正前方」这一小段窗口，其余全部盖雾
-     —— 解锁到哪一关，视野就跟到哪一关；上方的路始终是模糊的 */
+  /* 5.5) 薄雾：只往前盖——「当前关 + 正前方」清晰，更上面的路朦胧；
+     已经走过的关卡（下方）不再压雾，孩子回头能看到一路打上来的彩色战绩。
+     原版本上下都盖，走过的路被白雾糊成一团团灰影，看着像徽章坏了。 */
   const WIN_AHEAD=4;                              // 当前关 + 正前方 4 关 = 共 5 个关卡区域可见
   const cIdx=Math.min(Math.max(unlocked,0), LEVELS.length-1);
   const i0=cIdx, i1=Math.min(LEVELS.length-1, cIdx+WIN_AHEAD);
   const yA=Math.min(pts[i0].y, pts[i1].y), yB=Math.max(pts[i0].y, pts[i1].y);
   const yTop=yA - BALL*0.90;
-  const yBot=yB + BALL*0.90 + 24;
   if(yTop>6){
     const f=document.createElement('div'); f.className='fog top';
     f.style.top='0px'; f.style.height=Math.round(yTop)+'px'; cv.appendChild(f);
   }
-  if(yBot<H-6){
-    const f=document.createElement('div'); f.className='fog bot';
-    f.style.top=Math.round(yBot)+'px';
-    f.style.height=Math.round(H-yBot)+'px'; cv.appendChild(f);
-  }
   [...cv.querySelectorAll('.jNode')].forEach((el,k)=>{
-    el.classList.toggle('fogged', k<i0 || k>i1);
+    /* 只有「还没走到」的上方关卡才做朦胧处理；下方已通关的保持清晰彩色 */
+    el.classList.toggle('fogged', k>i1);
   });
 
   /* 6) 分段页签 + 进度 + 当前层定位 */
