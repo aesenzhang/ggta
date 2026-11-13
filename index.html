@@ -277,11 +277,7 @@
     background:radial-gradient(130% 130% at 50% 0%,rgba(58,42,110,.5),rgba(10,7,26,.9));
     backdrop-filter:blur(8px);}
   .overlay.hide{display:none;}
-  /* 首启家长须知：压在开场页之上、强制休息之下 */
-  #safeOv{z-index:94;}
-  #safeOv .card{width:min(94vw,560px);}
-  #safeOv .strat{font-size:13.5px; line-height:1.9;}
-  #safeOv .bigbtn{padding:13px 30px; font-size:16px;}
+  /* 首启家长须知页已按用户要求整页移除（样式同步删除） */
   /* 关卡时段胶囊：3 分钟基本段 / 每次加时 1 分钟 / 13 分钟强制休息 */
   /* 时段条贴在答题区顶部、与出题卡同宽：游戏区内不再叠任何 DOM 卡片，
      轨道与终点蔬菜因此完整可见、不被任何卡片遮挡 */
@@ -454,13 +450,14 @@
 
   /* ================= 全站固定标题栏：钉在视口顶部，不随地图滚动 ================= */
   /* 标题沿用闯关路径图的同一套艺术字：深墨描边 + 纵向硬挤出 + 逐字抖动倾斜 */
-  body{--rh:40px;}
+  body{--rh:40px; --rbdrop:46px;}
   /* 只在「关卡地图页」出现：其余页面（首页 / 战斗 / 胜利卡 / 设置）一律不显示 */
-  #routeBar{position:fixed; left:0; right:0; top:env(safe-area-inset-top,0px); height:var(--rh); z-index:88;
+  /* 标题整块下移一行（--rbdrop）：原本被「今日补给 + 难度页签」两行压着，
+     现在补给条删除后，标题正好落在原页签位置，顶部不再叠两层深色条 */
+  #routeBar{position:fixed; left:0; right:0; top:calc(env(safe-area-inset-top,0px) + var(--rbdrop)); height:var(--rh); z-index:88;
     display:none; align-items:center; justify-content:center; gap:8px;
     pointer-events:none;
-    background:linear-gradient(180deg,rgba(5,22,36,.97) 0%,rgba(5,22,36,.94) 74%,
-      rgba(5,22,36,.58) 90%,rgba(5,22,36,0) 100%);}
+    background:none;}
   #routeBar.on{display:flex;}
   /* 标题后面压一层暗晕，浅色页面上金字也立得住 */
   #routeBar::before{content:"";position:absolute; left:50%; top:-8px; z-index:-1;
@@ -480,7 +477,7 @@
   /* 顶栏只在地图页出现，战斗页 HUD 直接顶到屏幕最上；
      #buildbar 的 top 由 JS 依 #topbar 自动下移，无需改 */
   #topbar{top:env(safe-area-inset-top,0px);}
-  #levelSel .lmWrap{padding-top:calc(var(--rh) + env(safe-area-inset-top,0px));}
+  #levelSel .lmWrap{padding-top:calc(var(--rh) + var(--rbdrop) + env(safe-area-inset-top,0px));}
 
   /* ================= 薄雾：只露出当前关附近的窗口 ================= */
   #levelSel .fog{position:absolute; left:-18px; right:-18px; z-index:6; pointer-events:none;}
@@ -630,11 +627,14 @@
   #levelSel .lmTab:active{transform:translateY(2px);}
 
   #levelSel .lmBody{flex:1 1 auto; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
-    padding:2px 14px 24px; position:relative;}
+    overscroll-behavior:contain; padding:2px 14px 24px; position:relative;}
   #levelSel .lmBody::-webkit-scrollbar{width:0;}
   #levelSel .mapCanvas{position:relative; width:100%;}
   /* 连绵山脉层：压在路线与节点之下，只做背景 */
-  #levelSel .ridgeWrap{position:absolute; left:0; top:0; width:100%; height:100%; z-index:0; pointer-events:none;}
+  /* 山景 SVG 内含大量高斯模糊滤镜，滚动时若不提升为合成层会每帧整张重绘，
+     这里固定成独立图层，滚动只做图层位移 */
+  #levelSel .ridgeWrap{position:absolute; left:0; top:0; width:100%; height:100%; z-index:0;
+    pointer-events:none; will-change:transform; transform:translateZ(0); backface-visibility:hidden;}
   #levelSel .ridgeWrap svg{width:100%; height:100%; display:block;}
   #levelSel .mapPath{z-index:1;}
   #levelSel .mapPath{position:absolute; left:0; top:0; width:100%; height:100%; overflow:visible;
@@ -664,8 +664,10 @@
   #levelSel .stNode:active .stBall{transform:scale(.93);}
   /* 手绘守护者：占满徽章 82%，比原来的 emoji 大一大圈 */
   #levelSel .stBall svg{width:100%; height:100%; display:block; overflow:visible;}
-  /* 呼吸：极缓的上下浮动 + 轻微摆动，让徽章"活着" */
-  #levelSel .stBall svg{animation:gBreath 3.4s ease-in-out infinite;}
+  /* 呼吸：只给「当前关」一枚，其余 47 枚静止
+     —— 48 个 SVG 同时做 transform 动画，iOS 上每帧都要重绘，
+        正是地图上下滑动发涩的主因，减到 1 个即恢复顺滑 */
+  #levelSel .stNode.cur .stBall svg{animation:gBreath 3.4s ease-in-out infinite;}
   @keyframes gBreath{
     0%,100%{transform:translateY(0) scale(1);}
     50%    {transform:translateY(-1.2px) scale(1.035);}
@@ -702,11 +704,10 @@
   #levelSel .stNode.locked .stBall{filter:grayscale(.5); opacity:.94;}
   #levelSel .stNode.locked .stName{color:#5f7c72; opacity:.9;}
 
-  #levelSel .lmFoot{flex:0 0 auto; padding:5px 14px calc(7px + env(safe-area-inset-bottom));
+  #levelSel .lmFoot{flex:0 0 auto; padding:4px 14px calc(6px + env(safe-area-inset-bottom));
     display:flex; flex-direction:column; gap:6px; position:relative; z-index:6; background:none;}
-  #levelSel .lmFoot::before{content:""; position:absolute; left:50%; transform:translateX(-50%);
-    top:-20px; bottom:0; width:100vw; z-index:-1; pointer-events:none;
-    background:linear-gradient(180deg,rgba(9,34,40,0) 0%,rgba(9,34,40,.70) 38%,rgba(7,26,32,.94) 100%);}
+  /* 底部深色压边与「已解锁 N / 48 层」占位按用户要求整块删除：
+     红框那块背景不再渲染，地图内容一直延伸到底部返回按钮上方 */
   #levelSel .lmFoot .bigbtn{align-self:center; width:100%; max-width:420px; padding:11px 18px; font-size:15px;}
   #levelSel .lmProg{align-self:center; display:inline-flex; align-items:center; gap:6px; padding:2px 12px;
     border-radius:999px; font-size:11px; font-weight:900; color:#0f3b32; background:rgba(255,251,238,.94);
@@ -1053,11 +1054,9 @@
   <div class="lmWrap">
     <div class="lmHead">
       <div class="lmTop"><span id="dailyGift">🎁 今日补给</span></div>
-      <div class="lmTabs" id="gradeTabs"></div>
     </div>
     <div class="lmBody" id="levelGrid"></div>
     <div class="lmFoot">
-      <div class="lmProg" id="levelProg">已解锁 1 / 48</div>
       <button class="bigbtn ghost" id="levelBack">返回首页</button>
       <div id="adBanner" hidden></div>
     </div>
@@ -1122,14 +1121,6 @@
       </span>
     </div>
     <div class="setRow">
-      <span class="lb">今日广告奖励</span>
-      <span class="opts"><span id="adQuotaInfo" style="font-size:11.5px;font-weight:800;color:#ffe6a8;line-height:1.5">—</span></span>
-    </div>
-    <div class="setRow">
-      <span class="lb">家长须知</span>
-      <span class="opts"><span class="ob" id="safeOpen">查看</span></span>
-    </div>
-    <div class="setRow">
       <span class="lb">读题语音</span>
       <span class="opts"><span id="ttsInfo" style="font-size:11.5px;font-weight:800;color:#ffe6a8;line-height:1.5">—</span></span>
     </div>
@@ -1165,20 +1156,7 @@
   </div>
 </div>
 
-<div class="overlay hide" id="safeOv">
-  <div class="card">
-    <div class="poster2" aria-hidden="true">🤝</div>
-    <h1>给家长的一句话</h1>
-    <div class="sloganBig" style="margin:-2px 0 14px; font-size:15px">咣咣塔 · 怪来了？咣！</div>
-    <div class="strat">
-      · <b>免费</b>：无内购、无充值、无登录，不上传任何信息。<br>
-      · <b>广告自愿</b>：只有「看 15 秒换金币、换复活」这类<b>点了才播</b>的奖励广告，答题时绝不弹。<br>
-      · <b>这是游戏</b>：休闲益智，不提供课程与教学服务。
-    </div>
-    <div class="row"><button class="bigbtn" id="safeOk">开始游戏</button></div>
-    <div class="row" style="margin-top:10px"><button class="bigbtn ghost" id="safeParent">开启安心模式 · 少打扰</button></div>
-  </div>
-</div>
+<!-- 家长须知页已按用户要求移除 -->
 
 <div class="overlay" id="startOv">
   <div class="card">
@@ -3253,39 +3231,19 @@ let adAnswerCredit=8, adGateBusy=false, adGateNextQ=false;
 const AD_CREDIT_FULL=8, AD_CREDIT_SKIP=4;
 function updateCreditHud(){
   const el=document.getElementById('qcredit'); if(!el) return;
-  el.textContent=adAnswerCredit+' 题';
-  el.classList.toggle('low', adAnswerCredit<=0);
+  /* 广告闸门已关闭：题数不再受广告约束，徽章如实显示「不限」 */
+  el.textContent='不限';
+  el.classList.remove('low');
 }
 /* 返回 true = 放行；false = 已接管（弹广告或正在播） */
 function answerGate(){
-  if(adAnswerCredit>0) return true;
-  /* 家长 / 安心模式：不拦答题（儿童向产品的合规底线） */
-  if(AD.calm()){ adAnswerCredit=AD_CREDIT_FULL; updateCreditHud(); return true; }
-  /* 今日视频奖励次数已用完：再拦就会把玩家卡死，直接放行 */
-  if(AD.quota().left<=0){
-    adAnswerCredit=AD_CREDIT_FULL; updateCreditHud();
-    toast('今天的视频用完啦 · 这一层先免费答题');
-    return true;
-  }
-  if(adGateBusy) return false;
-  adGateBusy=true;
-  paused=true;
-  const pb=document.getElementById('pauseBtn'); if(pb) pb.textContent='▶';
-  AD.open('rewarded',{
-    title:'继续答题 · 8 题',
-    emoji:'🎬',
-    note:'完整观看：还能再答 <b>8</b> 道题<br>中途跳过：只能答 4 道',
-    onDone:(ok)=>{
-      adGateBusy=false;
-      adAnswerCredit = ok? AD_CREDIT_FULL : AD_CREDIT_SKIP;
-      updateCreditHud();
-      paused=false;
-      const b=document.getElementById('pauseBtn'); if(b) b.textContent='II';
-      toast('答题机会 +'+adAnswerCredit+' 题');
-      if(adGateNextQ){ adGateNextQ=false; newQuestion(); }
-    }
-  });
-  return false;
+  /* ---- 广告答题闸门已按用户要求整段关闭 ----
+     原逻辑：每答 8 题强制看一次激励视频，看完 +8 题、跳过 +4 题。
+     但在网页环境里没有可用的广告 SDK（wx.createRewardedVideoAd 仅微信小游戏存在），
+     这道闸门只会弹出 15 秒本地占位层白等，既无素材也无收益。
+     现在直接放行：答题不再限题数，孩子想答多少答多少。 */
+  adAnswerCredit=AD_CREDIT_FULL;
+  return true;
 }
 const usedQ=new Set();
 function key(q,a){ return q+'|'+a; }
@@ -4965,11 +4923,21 @@ function drawBaseEmoji(){
   const bCx=ex, bCy=y-size*0.50, bR=Math.max(20, size*sc*0.615);
   ctx.save();
   ctx.globalAlpha=1-goneP;
-  ctx.shadowColor='rgba(6,32,24,.52)'; ctx.shadowBlur=16*S; ctx.shadowOffsetY=5*S;
+  /* 投影半径收小：原来 16*S 的大范围柔光把圆盘边界糊成一团绿雾
+     （S≈2 时模糊半径达 32px），改成小半径投影后边界才立得住 */
+  ctx.shadowColor='rgba(6,32,24,.42)'; ctx.shadowBlur=5*S; ctx.shadowOffsetY=3*S;
   const bg2=ctx.createRadialGradient(bCx-bR*0.34,bCy-bR*0.42,bR*0.12,bCx,bCy,bR);
-  bg2.addColorStop(0,'#45896b'); bg2.addColorStop(0.60,'#20553f'); bg2.addColorStop(1,'#0d2c21');
+  bg2.addColorStop(0,'#4b9474'); bg2.addColorStop(0.55,'#20553f');
+  bg2.addColorStop(0.96,'#0d2c21'); bg2.addColorStop(1,'#08211a');
   ctx.fillStyle=bg2;
   ctx.beginPath(); ctx.arc(bCx,bCy,bR,0,6.28); ctx.fill();
+  ctx.restore();
+  /* 外轮廓：一圈深色实描边，把圆边界"钉"清楚，不再靠渐变糊过去 */
+  ctx.save();
+  ctx.globalAlpha=1-goneP;
+  const edgeW=Math.max(1.4, bR*0.030);
+  ctx.strokeStyle='rgba(6,30,24,.92)'; ctx.lineWidth=edgeW;
+  ctx.beginPath(); ctx.arc(bCx,bCy,bR-edgeW*0.5,0,6.28); ctx.stroke();
   ctx.restore();
   ctx.save();
   ctx.globalAlpha=1-goneP;
@@ -5019,13 +4987,15 @@ function drawBaseEmoji(){
     const _im = (typeof GUARD_IMG!=='undefined') ? GUARD_IMG[_gi] : null;
     ctx.shadowColor='rgba(40,20,10,.34)'; ctx.shadowBlur=10*S; ctx.shadowOffsetY=5*S;
     if(_im && _im.complete && _im.naturalWidth){
-      /* 手绘守卫：整只画进 0.88 倍身位，保持圆胖比例 */
-      const _w=size*sc*0.86;
-      ctx.drawImage(_im, -_w/2, -size*0.72, _w, _w);
+      /* 手绘守卫：放大到贴住底盘内白环，头顶叶子与脚底刚好抵住内沿
+         底盘半径 bR = 0.615*size*sc；金环 + 内白环共占约 10.7% 半径，
+         内白环直径 ≈ 1.10*size*sc —— 取 1.10 即"顶满且不压金环" */
+      const _w=size*sc*1.13;
+      ctx.drawImage(_im, -_w/2, -size*0.50-_w/2+_w*0.012, _w, _w);
     } else {
       /* 解码完成前 / 异常兜底：仍按 emoji 画，画面不开天窗 */
-      ctx.font='900 '+Math.round(size*sc*0.74)+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","PingFang SC",system-ui,sans-serif';
-      ctx.fillText(L.veg.emoji, 0, -size*0.10);
+      ctx.font='900 '+Math.round(size*sc*1.02)+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","PingFang SC",system-ui,sans-serif';
+      ctx.fillText(L.veg.emoji, 0, -size*0.50+size*sc*0.36);
     }
     ctx.restore();
   }
@@ -5839,6 +5809,14 @@ const AD=(function(){
     open(kind,o){
       o=o||{};
       if(parentOn()) return;            /* 完全静音：不播，也不发奖（按钮本来就不显示） */
+      /* 网页环境没有真实广告位（AD_UNIT 仍是占位符 / 无 wx SDK）：
+         不再弹 15 秒本地占位层白等，点一下直接按「完整看完」发奖。
+         以后把 AD_UNIT 换成真广告位 ID，这里自动改走真广告，逻辑无需改动。 */
+      if(!AdBridge.real){
+        const fn=o.onDone||null;
+        if(fn){ try{ fn(true); }catch(e){} }
+        return;
+      }
       if(kind==='rewarded' && quota().left<=0){
         toast('今天的视频奖励已经用完啦，明天再来～');
         return;
@@ -6270,24 +6248,9 @@ function renderJourney(){
   const curY=pts[Math.min(unlocked,pts.length-1)].y;
   window.__jumpCur=function(){ body.scrollTo({top:Math.max(0, curY-BALL/2-150), behavior:'auto'}); };
 
-  /* 滚动时分段页签跟着当前可视段自动高亮 */
-  if(!body.__lmScrollBound){
-    body.__lmScrollBound=1;
-    let raf=0;
-    body.addEventListener('scroll',()=>{
-      if(raf) return;
-      raf=requestAnimationFrame(()=>{
-        raf=0;
-        const tags=[...body.querySelectorAll('.segTag')];
-        if(!tags.length) return;
-        const y=body.scrollTop+150;
-        let idx=0;
-        tags.forEach((t,k)=>{ if((parseFloat(t.style.top)||0)+40<=y) idx=k; });
-        const tb=document.getElementById('gradeTabs');
-        if(tb) tb.querySelectorAll('.lmTab').forEach((x,k)=>x.classList.toggle('on',k===Math.floor(idx/2)));
-      });
-    },{passive:true});
-  }
+  /* 原「滚动时高亮难度页签」监听已删除：
+     页签（#gradeTabs）按用户要求移除后，这里只剩每帧 querySelectorAll 的空跑，
+     滚动时白白占用主线程，删掉可让地图上下滑动更跟手 */
 
   /* 窗口尺寸变化重排（横竖屏切换、桌面拖窗） */
   if(!window.__lmResizeBind){
@@ -6511,27 +6474,10 @@ document.getElementById('setClose').onclick=()=>{ closeSet(); sfx('click'); };
   if(r2) r2.onclick=()=>{ const b=document.getElementById('restartBtn'); if(b) b.click(); closeSet(); };
 })();
 
-/* ===== 家长须知：首次进入必看一次，之后可从 ⚙ 设置再次打开 ===== */
-(function(){
-  const ov=document.getElementById('safeOv'); if(!ov) return;
-  const KEY='mgw_notice';
-  function open(){ ov.classList.remove('hide'); }
-  function done(){ ov.classList.add('hide'); try{ localStorage.setItem(KEY,'1'); }catch(e){} }
-  window.__openNotice=open;
-  let seen=false; try{ seen = localStorage.getItem(KEY)==='1'; }catch(e){}
-  if(!seen) open();
-  const ok=document.getElementById('safeOk');
-  if(ok) ok.onclick=()=>{ done(); sfx('click'); };
-  const sp=document.getElementById('safeParent');
-  if(sp) sp.onclick=()=>{
-    AD.setParent(true); syncAdButtons();
-    document.querySelectorAll('#parentOpts .ob').forEach(x=>x.classList.toggle('on', x.dataset.p==='1'));
-    done(); toast('已开启家长模式 · 全部广告已关闭');
-    sfx('click');
-  };
-  const so=document.getElementById('safeOpen');
-  if(so) so.onclick=()=>{ closeSet(); open(); sfx('click'); };
-})();
+/* ===== 家长须知页已按用户要求整页移除 =====
+   页面、CSS、设置入口一并删除；这里只留一个空实现，
+   避免历史代码或旧缓存里的入口调用时报错。 */
+window.__openNotice=function(){};
 setOv.addEventListener('click',e=>{ if(e.target===setOv) closeSet(); });
 document.querySelectorAll('#durOpts .ob').forEach(o=>{
   o.onclick=()=>{ setQDur(+o.dataset.d, true); toast('每题显示 '+o.dataset.d+' 秒'); sfx('click'); };
